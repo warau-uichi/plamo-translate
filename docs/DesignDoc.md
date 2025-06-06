@@ -1,4 +1,4 @@
-# PLaMo翻訳 + WebスクレイピングによるローカルMCP CLIの設計ドキュメント
+# PLaMo翻訳 + WebスクレイピングによるローカルMCPサーバの設計ドキュメント
 
 ## 目的
 
@@ -23,7 +23,7 @@
 ```mermaid
 sequenceDiagram
     participant User as MCPクライアント<br/>(Cline, Copilotなど)
-    participant MCP as MCP CLI<br/>(今回構築)
+    participant MCP as MCPサーバ<br/>(今回構築)
     participant Web as Webページ
     participant Scraper as スクレイパー<br/>(HTMLパーサー)
     participant PLaMo as PLaMo翻訳
@@ -40,9 +40,9 @@ sequenceDiagram
 
 ---
 
-## MCP CLIの概要
+## MCPサーバの概要
 
-MCP CLIは、**指定された英文WebページのURLから主要テキストを抽出し、日本語訳を返すローカルツール**である。
+MCPサーバは、**指定された英文WebページのURLから主要テキストを抽出し、日本語訳を返すローカルツール**である。
 
 - URLから対象Webページを取得
 - ページ内のメインコンテンツをスクレイピングで抽出し、Markdown形式でファイルに保存
@@ -51,7 +51,7 @@ MCP CLIは、**指定された英文WebページのURLから主要テキスト�
 
 ---
 
-## MCP CLIの内部仕様
+## MCPサーバの内部仕様
 
 ### 1. LMクライアントとの連携
 
