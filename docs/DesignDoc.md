@@ -1,4 +1,4 @@
-# PLaMo翻訳 + WebスクレイピングによるローカルMCPサーバの設計ドキュメント
+# PLaMo翻訳 + WebスクレイピングによるローカルMCP CLIの設計ドキュメント
 
 ## 目的
 
@@ -23,7 +23,7 @@
 ```mermaid
 sequenceDiagram
     participant User as MCPクライアント<br/>(Cline, Copilotなど)
-    participant MCP as MCPサーバ<br/>(今回構築)
+    participant MCP as MCP CLI<br/>(今回構築)
     participant Web as Webページ
     participant Scraper as スクレイパー<br/>(HTMLパーサー)
     participant PLaMo as PLaMo翻訳
@@ -40,18 +40,18 @@ sequenceDiagram
 
 ---
 
-## MCPサーバの概要
+## MCP CLIの概要
 
-MCPサーバは、**指定された英文WebページのURLから主要テキストを抽出し、日本語訳を返すローカルサービス**である。
+MCP CLIは、**指定された英文WebページのURLから主要テキストを抽出し、日本語訳を返すローカルツール**である。
 
 - URLから対象Webページを取得
-- ページ内のメインコンテンツをスクレイピングで抽出
-- 抽出した英文テキストを高精度な翻訳モデル（PLaMo）で日本語に変換
-- 翻訳結果をMCPクライアントに返却
+- ページ内のメインコンテンツをスクレイピングで抽出し、Markdown形式でファイルに保存
+- 抽出したMarkdownを高精度な翻訳モデル（PLaMo）で日本語に変換
+- 翻訳結果をMarkdown形式でファイルに保存し、MCPクライアントに返却
 
 ---
 
-## MCPサーバの内部仕様
+## MCP CLIの内部仕様
 
 ### 1. LMクライアントとの連携
 
@@ -64,6 +64,7 @@ MCPサーバは、**指定された英文WebページのURLから主要テキス
 
 - Webページからメインコンテンツ（本文）を抽出するために、[**Trafilatura**](https://github.com/adbar/trafilatura) を使用。
   - 特徴：URLを渡すだけで主要テキスト部分を自動抽出できる高精度なライブラリ。
+  - 抽出結果はMarkdown形式でファイルに出力する。
 
 ---
 
@@ -71,6 +72,7 @@ MCPサーバは、**指定された英文WebページのURLから主要テキス
 
 - 翻訳には [**plamo-2-translate**](https://huggingface.co/pfnet/plamo-2-translate) モデルを使用。
 - モデルはローカルで [`vLLM`](https://docs.vllm.ai/en/latest/) を用いて実行する。
+- 入力としてMarkdownファイルを受け取り、翻訳結果もMarkdown形式でファイルに出力する。
 
 #### 長文翻訳への対応
 
